@@ -1,5 +1,6 @@
 import { Module, RequestMethod } from '@nestjs/common';
 import { APP_FILTER } from '@nestjs/core';
+import { BullModule } from '@nestjs/bull';
 import { Connection } from './connection/connection';
 import { GlobalExceptionFilter } from './filters/global-exception/global-exception.filter';
 import NcPluginMgrv2 from './helpers/NcPluginMgrv2';
@@ -19,6 +20,7 @@ import { BaseViewStrategy } from './strategies/base-view.strategy/base-view.stra
 import NcUpgrader from './version-upgrader/NcUpgrader';
 import { MetasModule } from './modules/metas/metas.module';
 import NocoCache from './cache/NocoCache';
+import { JobsModule } from './modules/jobs/jobs.module';
 import type {
   MiddlewareConsumer,
   OnApplicationBootstrap,
@@ -31,6 +33,13 @@ import type {
     ...(process.env['PLAYWRIGHT_TEST'] === 'true' ? [TestModule] : []),
     MetasModule,
     DatasModule,
+    JobsModule,
+    BullModule.forRoot({
+      redis: {
+        host: 'localhost',
+        port: 6379,
+      },
+    }),
   ],
   controllers: [],
   providers: [
